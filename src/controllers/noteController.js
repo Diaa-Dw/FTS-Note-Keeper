@@ -1,4 +1,5 @@
 const Note = require("../models/noteModel");
+const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const responseHandler = require("../utils/responseHandler");
 
@@ -30,7 +31,7 @@ exports.getNoteById = catchAsync(async (req, res, next) => {
   const note = await Note.findOne({ _id: id, user: user._id });
 
   if (!note) {
-    next(new Error(`Note not found or unauthorized`));
+    next(new AppError(`Note not found or unauthorized`, 401));
   }
 
   responseHandler(res, 200, note);
@@ -53,7 +54,7 @@ exports.updateNoteById = catchAsync(async (req, res, next) => {
   );
 
   if (!updatedNote) {
-    next(new Error(`Note not found or unauthorized`));
+    next(new AppError(`Note not found or unauthorized`, 401));
   }
   responseHandler(res, 200, updatedNote);
 });
@@ -68,7 +69,7 @@ exports.deleteNoteById = catchAsync(async (req, res, next) => {
   });
 
   if (!deletedNote) {
-    next(new Error(`Note not found or unauthorized`));
+    next(new AppError(`Note not found or unauthorized`, 401));
   }
 
   responseHandler(res, 204, null);

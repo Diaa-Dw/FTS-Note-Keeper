@@ -5,6 +5,7 @@ const { promisify } = require("util");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const responseHandler = require("../utils/responseHandler");
+const AppError = require("../utils/appError");
 
 //Use to create JWT
 const signToken = (id) => {
@@ -45,14 +46,14 @@ exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(new Error(`Please provide email and password!`));
+    return next(new AppError(`Please provide email and password!`, 400));
   }
 
   const user = await User.findOne({ email }).select("+password");
 
   //Check if user with input email exsist and if it is then compare user-password with input password using userSchem method
   if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(new Error(`Incorrect email or password`));
+    return next(new AppError(`Incorrect email or password!`, 401));
   }
 
   createSendToken(res, 200, user);
@@ -81,7 +82,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new Error(`You are not logged in! Please log in to get access.`)
+      new AppError(`You are not logged in! Please log in to get access.`, 401)
     );
   }
 
@@ -89,7 +90,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   const currentUser = await User.findById(decode.id);
   if (!currentUser) {
-    new Error("The user belonging to this token does no longer exist.");
+    new AppError("The user belonging to this token does no longer exist.", 401);
   }
 
   req.user = currentUser;
