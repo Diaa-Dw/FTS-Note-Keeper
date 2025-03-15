@@ -25,6 +25,16 @@ exports.getNoteById = catchAsync(async (req, res, next) => {
   responseHandler(res, 200, note);
 });
 
+exports.updateNoteById = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const updatedNote = await Note.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  responseHandler(res, 200, updatedNote);
+});
+
 exports.deleteNoteById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 

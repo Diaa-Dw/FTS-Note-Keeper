@@ -10,6 +10,8 @@ router.get("/", noteController.getAllNotes);
 
 router.get("/:id", noteController.getNoteById);
 
+router.patch("/:id", noteController.updateNoteById);
+
 router.delete("/:id", noteController.deleteNoteById);
 
 module.exports = router;
