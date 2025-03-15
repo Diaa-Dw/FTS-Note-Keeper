@@ -24,3 +24,11 @@ exports.getNoteById = catchAsync(async (req, res, next) => {
 
   responseHandler(res, 200, note);
 });
+
+exports.deleteNoteById = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  await Note.findByIdAndDelete(id);
+
+  responseHandler(res, 204, null);
+});
