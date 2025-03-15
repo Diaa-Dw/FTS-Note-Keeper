@@ -50,12 +50,22 @@ exports.login = catchAsync(async (req, res, next) => {
 
   const user = await User.findOne({ email }).select("+password");
 
+  //Check if user with input email exsist and if it is then compare user-password with input password using userSchem method
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new Error(`Incorrect email or password`));
   }
 
   createSendToken(res, 200, user);
 });
+
+exports.logout = (req, res) => {
+  res.cookie("jwt", "loggedout", {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({ status: "success" });
+};
 
 //This middleware ensure that user must be login for handling note routes
 exports.protect = catchAsync(async (req, res, next) => {
