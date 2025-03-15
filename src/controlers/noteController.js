@@ -17,3 +17,10 @@ exports.getAllNotes = catchAsync(async (req, res, next) => {
 
   responseHandler(res, 200, notes);
 });
+
+exports.getNoteById = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const note = await Note.findById(id);
+
+  responseHandler(res, 200, note);
+});
