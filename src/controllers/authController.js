@@ -6,12 +6,14 @@ const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const responseHandler = require("../utils/responseHandler");
 
+//Use to create JWT
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
+//Use to put JWT in response and sent to client
 const createSendToken = (res, statusCode, user) => {
   const token = signToken(user._id);
 
@@ -39,6 +41,23 @@ exports.register = catchAsync(async (req, res, next) => {
   createSendToken(res, 201, newUser);
 });
 
+exports.login = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return next(new Error(`Please provide email and password!`));
+  }
+
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user || !(await user.correctPassword(password, user.password))) {
+    return next(new Error(`Incorrect email or password`));
+  }
+
+  createSendToken(res, 200, user);
+});
+
+//This middleware ensure that user must be login for handling note routes
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   if (
