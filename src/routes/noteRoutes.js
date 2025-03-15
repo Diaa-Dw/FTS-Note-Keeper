@@ -1,6 +1,6 @@
 const express = require("express");
 
-const noteController = require("../controlers/noteController");
+const noteController = require("../controllers/noteController");
 
 const router = express.Router();
 

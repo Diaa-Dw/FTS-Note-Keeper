@@ -15,8 +15,11 @@
   "license": "ISC",
   "description": "An efficient RESTful API for managing notes. It provides endpoints for creating, retrieving, updating, and deleting notes. Built with Express.js and MongoDB, it supports authentication, pagination, and search functionality to enhance user experience.",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.12.1",
     "validator": "^13.12.0"
   }
