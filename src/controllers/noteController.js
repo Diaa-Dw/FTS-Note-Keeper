@@ -13,6 +13,7 @@ exports.createNote = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllNotes = catchAsync(async (req, res, next) => {
+  console.log(req.user);
   const notes = await Note.find();
 
   responseHandler(res, 200, notes);
