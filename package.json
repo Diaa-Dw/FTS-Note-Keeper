@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --watch src/server.js"
+    "start": "nodemon src/server.js"
   },
   "keywords": [
     "nodejs",
@@ -27,5 +27,8 @@
     "mongoose": "^8.12.1",
     "validator": "^13.12.0",
     "xss-clean": "^0.1.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
