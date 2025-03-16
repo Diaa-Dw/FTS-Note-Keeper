@@ -1,8 +1,10 @@
 const Note = require("../models/noteModel");
+const APIFeatures = require("../utils/ApiFeature");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const responseHandler = require("../utils/responseHandler");
 
+//create note and use user-id as refrance to it
 exports.createNote = catchAsync(async (req, res, next) => {
   const { user } = req;
 
@@ -15,14 +17,20 @@ exports.createNote = catchAsync(async (req, res, next) => {
   responseHandler(res, 201, createdNote);
 });
 
+//Return all notes that belong to user
 exports.getAllNotes = catchAsync(async (req, res, next) => {
   const { user } = req;
 
-  const notes = await Note.find({
-    user: user._id,
-  });
+  const features = new APIFeatures(
+    Note.find({
+      user: user._id,
+    }),
+    req.query
+  ).paginate();
 
-  responseHandler(res, 200, notes);
+  const results = await features.execute();
+
+  responseHandler(res, 200, results);
 });
 
 exports.getNoteById = catchAsync(async (req, res, next) => {
@@ -73,4 +81,21 @@ exports.deleteNoteById = catchAsync(async (req, res, next) => {
   }
 
   responseHandler(res, 204, null);
+});
+
+exports.search = catchAsync(async (req, res, next) => {
+  const { user } = req;
+  const searchTerm = req.query.query;
+
+  if (!searchTerm) {
+    next(new AppError(`Query parameter is required`), 400);
+  }
+
+  const features = new APIFeatures(Note.find({ user: user._id }), req.query)
+    .search()
+    .paginate();
+
+  const results = await features.execute();
+
+  responseHandler(res, 200, results);
 });
