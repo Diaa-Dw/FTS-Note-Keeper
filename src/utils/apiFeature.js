@@ -36,6 +36,7 @@ class APIFeatures {
     const totalCount = await this.query.model.countDocuments(
       this.query._conditions
     );
+    console.log("🚀 ~ APIFeatures ~ execute ~ totalCount:", totalCount);
 
     //execute the query to get the pagination results
     const results = await this.query;
@@ -45,7 +46,7 @@ class APIFeatures {
     const totalPages = Math.ceil(totalCount / limit);
     const currentPage = Number(this.queryString.page) || 1;
 
-    const nextPage = currentPage < totalCount ? currentPage + 1 : null;
+    const nextPage = currentPage < totalPages ? currentPage + 1 : null;
     const prevPage = currentPage > 1 ? currentPage - 1 : null;
 
     return {
