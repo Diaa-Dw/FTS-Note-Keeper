@@ -13,7 +13,7 @@ const AppError = require("./utils/appError");
 
 const app = express();
 
-app.use(express.json("limit: 10kb"));
+app.use(express.json({ limit: "10kb" }));
 app.use(cookiePareser());
 //set secuirty HTTP headers
 app.use(helmet());
