@@ -99,6 +99,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
+  
+
   req.user = currentUser;
   res.locals.user = currentUser;
   next();
@@ -157,4 +159,40 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
       )
     );
   }
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  //get user based on token
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+  console.log(
+    "🚀 ~ exports.resetPassword=catchAsync ~ hashedToken:",
+    hashedToken
+  );
+
+  console.log("1");
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  console.log("2");
+
+  //if token has not expired, and there is user with token we will set the new password
+  if (!user) {
+    return next(new AppError("Token is invalid or has expired", 400));
+  }
+
+  user.password = req.body.password;
+  console.log("2");
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  //login the user by sending JWT
+  createSendToken(res, 200, user);
+  console.log("3");
 });

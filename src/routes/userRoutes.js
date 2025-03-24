@@ -7,6 +7,7 @@ router.post("/register", authController.register);
 router.post("/login", authController.login);
 router.get("/logout", authController.logout);
 router.post("/forgotPassword", authController.forgotPassword);
+router.patch("/resetPassword/:token", authController.resetPassword);
 
 //user must be login to access this endpoints
 router.use(authController.protect);

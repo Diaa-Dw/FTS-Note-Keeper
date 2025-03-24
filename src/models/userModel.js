@@ -38,6 +38,7 @@ userSchema.pre("save", function (next) {
 
   //update the date password changed at
   this.passwordChangedAt = Date.now();
+  next();
 });
 
 userSchema.methods.correctPassword = async function (
@@ -55,7 +56,8 @@ userSchema.methods.createPasswordResetToken = function () {
     .update(resetToken)
     .digest("hex");
 
-  this.passwordResetToken = Date.now() + 10 * 60 * 1000;
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  console.log("🚀 ~ resetToken:", resetToken, this.passwordResetToken);
 
   return resetToken;
 };
