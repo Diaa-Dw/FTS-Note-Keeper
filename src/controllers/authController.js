@@ -102,3 +102,21 @@ exports.protect = catchAsync(async (req, res, next) => {
   res.locals.user = currentUser;
   next();
 });
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  //get user from DB
+  const user = await User.findById(req.user.id).select("+password");
+  //check if posted current password is correct
+  if (!(await user.correctPassword(req.body.currentPassword, user.password))) {
+    return next(new AppError(`Your current password is worng`, 401));
+  }
+
+  //if it's correct we update the password
+  user.password = req.body.newPassword;
+
+  //save updated
+  await user.save();
+
+  //relogin user by sending JWT
+  createSendToken(res, 200, user);
+});
