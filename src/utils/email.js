@@ -1,4 +1,7 @@
+const dotenv = require("dotenv");
 const nodemailer = require("nodemailer");
+
+dotenv.config(`${__dirname}/../.env`);
 
 //create a transporter
 const transporter = nodemailer.createTransport({
@@ -9,7 +12,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendEmail = async (to, subject, text) => {
+exports.sendEmail = async (to, subject, text) => {
   try {
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -24,5 +27,3 @@ const sendEmail = async (to, subject, text) => {
     console.log("🚀 ~ sendEmail ~ error:", error);
   }
 };
-
-export default sendEmail;
