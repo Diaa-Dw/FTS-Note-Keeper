@@ -62,6 +62,21 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken;
 };
 
+//method to check if given jwt expired or not
+userSchema.methods.changedPasswordAfter = function (jwtTimeStamp) {
+  if (this.passwordChangedAt) {
+    const changedTimeStamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+
+    //if true then password changed after jwt sent so it is not valid
+    return jwtTimeStamp < changedTimeStamp;
+  }
+  //false means not changed
+  return false;
+};
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

@@ -99,7 +99,12 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  
+  //check if user changged password after token sent
+  if (user.changedPasswordAfter(decode.iat)) {
+    return next(
+      new AppError("User recently changed password! Please log in again.", 401)
+    );
+  }
 
   req.user = currentUser;
   res.locals.user = currentUser;
