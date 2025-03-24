@@ -14,12 +14,16 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, "Please provide a valid email"],
   },
+  photo: String,
   password: {
     type: String,
     required: [true, "Please provide a password"],
     minlength: 8,
     select: false,
   },
+  passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
 
 userSchema.pre("save", async function (next) {
@@ -34,8 +38,6 @@ userSchema.methods.correctPassword = async function (
 ) {
   return await bcrypt.compare(inputPassword, userPassword);
 };
-
-
 
 const User = mongoose.model("User", userSchema);
 
