@@ -32,15 +32,19 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 12);
 });
 
+userSchema.pre("save", function () {
+  if (!this.isModified("password") || this.isNew) return next();
+
+  //update the date password changed at
+  this.passwordChangedAt = Date.now();
+});
+
 userSchema.methods.correctPassword = async function (
   inputPassword,
   userPassword
 ) {
   return await bcrypt.compare(inputPassword, userPassword);
 };
-
-
-
 
 const User = mongoose.model("User", userSchema);
 

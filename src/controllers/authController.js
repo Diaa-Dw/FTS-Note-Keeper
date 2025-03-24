@@ -103,6 +103,8 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+
+
 exports.updatePassword = catchAsync(async (req, res, next) => {
   //get user from DB
   const user = await User.findById(req.user.id).select("+password");
